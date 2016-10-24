@@ -8,5 +8,5 @@ através da rede WIFI, o banco de dados será persistido através de uma outra a
 
 Nessa primeira versão , o único banco de dados suportado é o MSSQLSERVER, nas próximas versões desejo adicionar suporte a outros bancos de dados.
 
-*O mecanismo de conexão ainda não está funcional.
+
 
