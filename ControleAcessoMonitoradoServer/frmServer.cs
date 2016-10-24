@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Sql;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -9,6 +11,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Connection;
+using Controller;
 
 namespace ControleAcessoMonitoradoServer
 {
@@ -23,7 +27,8 @@ namespace ControleAcessoMonitoradoServer
         //Pegar IP do LOCALHOST
         private static string nomeMaquina = Dns.GetHostName();
         IPAddress[] ip = Dns.GetHostAddresses(nomeMaquina);
-
+        //Instancias SQLServer
+        DataTable dataTable = SqlDataSourceEnumerator.Instance.GetDataSources();
 
 
         //Delegate e método de atualizar o textbox Console
@@ -59,6 +64,94 @@ namespace ControleAcessoMonitoradoServer
 
             configuracoesServidorBancoDados();
 
+            //Adiciona nomes dos Servidores SQLSERVER  disponiveis ao cbNomeServidor.
+            RecuperarNomeServidorInstancia();
+            cbNomeServidor.SelectedIndex = 0;
+            RecuperarNomeDataBases();
+            cbNomeBancoDados.SelectedIndex = 0;
+            
+
+        }
+
+
+        //Método que busca nome dos Servidores SQLSERVER locais e na rede. 
+        private void MostrarDados(DataTable dataTable)
+        {
+            foreach (DataRow row in dataTable.Rows)
+            {
+                cbNomeServidor.Items.Add(row["ServerName"]);
+                cbNomeBancoDados.Items.Add(row["InstanceName"]);
+            }
+
+            
+        }
+
+        private  void RecuperarNomeServidorInstancia()
+        {
+            //List<String> ServerNames = new List<String>();
+
+            SqlDataSourceEnumerator servers = SqlDataSourceEnumerator.Instance;
+            DataTable serversTable = servers.GetDataSources();
+
+            foreach (DataRow row in serversTable.Rows)
+            {
+                string serverName = row[0].ToString();
+
+                try
+                {
+                    if (row[1].ToString() != "")
+                    {
+
+                        serverName += "\\" + row[1].ToString();
+
+                    }
+                }
+                catch
+                {
+
+
+                }
+
+                cbNomeServidor.Items.Add(serverName);
+
+            }
+        }
+
+        private void RecuperarNomeDataBases()
+        {
+            List<String> databases = new List<String>();
+
+            SqlConnectionStringBuilder connection = new SqlConnectionStringBuilder();
+
+            connection.DataSource = cbNomeServidor.SelectedItem.ToString();
+            // enter credentials if you want
+            //connection.UserID = //get username;
+            // connection.Password = //get password;
+            connection.IntegratedSecurity = true;
+
+            String strConn = connection.ToString();
+
+            //create connection
+            SqlConnection sqlConn = new SqlConnection(strConn);
+
+            //open connection
+            sqlConn.Open();
+
+            //get databases
+            DataTable tblDatabases = sqlConn.GetSchema("Databases");
+
+            //close connection
+            sqlConn.Close();
+
+            //add to list
+            foreach (DataRow row in tblDatabases.Rows)
+            {
+                String strDatabaseName = row["database_name"].ToString();
+
+                //databases.Add(strDatabaseName);
+                cbNomeBancoDados.Items.Add(strDatabaseName);
+
+            }
         }
 
         private void configuracoesServidorBancoDados()
@@ -68,6 +161,8 @@ namespace ControleAcessoMonitoradoServer
             cbAutenticacao.Items.Add("Autenticação do SQL Server");
             cbAutenticacao.SelectedIndex = 0;
             btDesconectarBancoDados.Enabled = false;
+
+            
         }
 
 
@@ -108,9 +203,11 @@ namespace ControleAcessoMonitoradoServer
             try
             {
 
+                //Variáveis que são passadas pelo usuário no form
                 string ip = cbIp.SelectedItem.ToString();
                 int porta = Convert.ToInt32(tbPortaServidor.Text);
                 
+                //Se o método SetupServer retornar 1, significa que o servidor está rodando.
                 if(SetupServer(ip, porta).Equals("1"))
                 {
                     lbStatus.ForeColor = Color.Green;
@@ -129,12 +226,15 @@ namespace ControleAcessoMonitoradoServer
            
         }
 
+
         private void btPararServidor_Click(object sender, EventArgs e)
         {
+            //Pergunta se o Usuário tem certeza em fechar o servidor.
             DialogResult resultado = MessageBox.Show("Parar o servidor pode ocasionar erros no funcionamento do sistema. \n Deseja realmente parar o servidor?",
                 "Servidor Controle de Acesso Monitorado", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
 
+            //Caso sim, fecha o Socket TCP/IP do servidor
             if (resultado == DialogResult.Yes)
             {
                 CloseAllSockets();
@@ -147,6 +247,7 @@ namespace ControleAcessoMonitoradoServer
         }
 
 
+        //Método que cria o Servidor.
         private string SetupServer(string ip, int porta)
         {
            
@@ -163,8 +264,7 @@ namespace ControleAcessoMonitoradoServer
 
         private void CloseAllSockets()
         {
-            LingerOption lo = new LingerOption(false, 0);
-
+            
             foreach (Socket socket in clienteSockets)
             {
                 
@@ -173,19 +273,8 @@ namespace ControleAcessoMonitoradoServer
                
             }
 
-           
             serverSocket.Close();
             AtualizarTextBox("Servidor desligado com sucesso. \r\n");
-        }
-
-        private static void DesconectarCallback(IAsyncResult ar)
-        {
-            
-            Socket socket = (Socket)ar.AsyncState;
-            
-            socket.EndDisconnect(ar);
-            
-            
         }
 
         private void AcceptCallback(IAsyncResult AR)
@@ -194,11 +283,8 @@ namespace ControleAcessoMonitoradoServer
 
             try
             {
-                //if (serverSocket != null && serverSocket.Connected)
-                
                     socket = serverSocket.EndAccept(AR);
-                   
-                
+
             }
             catch (ObjectDisposedException)
             {
@@ -281,9 +367,9 @@ namespace ControleAcessoMonitoradoServer
 
             
 
-            //Supervisao supervisao = new Supervisao();
+            Supervisao supervisao = new Supervisao();
 
-            /*if (supervisao.consultaPermissao(tag, identSala) == 1)
+           if (supervisao.consultaPermissao(tag, identSala) == 1)
             {
 
                 if (supervisao.verificaSenha(senha) == 1)
@@ -301,7 +387,7 @@ namespace ControleAcessoMonitoradoServer
             {
                 byte[] data = Encoding.ASCII.GetBytes("Você não possui permissão!");
                 current.Send(data);
-            }*/
+            }
 
 
              if (text.ToLower() == "get time") // Client requested time
@@ -331,7 +417,28 @@ namespace ControleAcessoMonitoradoServer
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
         }
 
-        
+        private void btConectarBancoDados_Click(object sender, EventArgs e)
+        {
+            AcessoDadosSqlServer acessoDadosSqlServer;
+
+            if (cbAutenticacao.SelectedItem.Equals("Autenticação do Windows"))
+            {
+                string dataSource = cbNomeServidor.SelectedItem.ToString();
+                string dataBase = cbNomeBancoDados.SelectedItem.ToString();
+                acessoDadosSqlServer = new AcessoDadosSqlServer(dataSource, dataBase);
+               
+            }
+            if(cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
+            {
+                string dataSource = cbNomeServidor.SelectedItem.ToString();
+                string dataBase = cbNomeBancoDados.SelectedItem.ToString();
+                string user = cbNomeUsuario.SelectedItem.ToString();
+                string senha = tbSenha.Text.ToString();
+                acessoDadosSqlServer = new AcessoDadosSqlServer(dataSource, dataBase, user, senha);
+                
+            }
+            
+        }
     }
 }
         
