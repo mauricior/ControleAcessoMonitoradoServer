@@ -38,6 +38,8 @@
             this.lbStatus = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.cbNomeBancoDados = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.lbStatusBancoDados = new System.Windows.Forms.Label();
             this.btDesconectarBancoDados = new System.Windows.Forms.Button();
             this.btConectarBancoDados = new System.Windows.Forms.Button();
@@ -51,8 +53,7 @@
             this.cbNomeServidor = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tbConsole = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.cbNomeBancoDados = new System.Windows.Forms.ComboBox();
+            this.lbStatusBD = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -147,6 +148,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lbStatusBD);
             this.groupBox2.Controls.Add(this.cbNomeBancoDados);
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.lbStatusBancoDados);
@@ -166,6 +168,24 @@
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configurações Banco de Dados";
+            // 
+            // cbNomeBancoDados
+            // 
+            this.cbNomeBancoDados.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbNomeBancoDados.FormattingEnabled = true;
+            this.cbNomeBancoDados.Location = new System.Drawing.Point(160, 69);
+            this.cbNomeBancoDados.Name = "cbNomeBancoDados";
+            this.cbNomeBancoDados.Size = new System.Drawing.Size(213, 21);
+            this.cbNomeBancoDados.TabIndex = 12;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(24, 72);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(118, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Nome banco de dados:";
             // 
             // lbStatusBancoDados
             // 
@@ -287,23 +307,13 @@
             this.tbConsole.Size = new System.Drawing.Size(676, 369);
             this.tbConsole.TabIndex = 1;
             // 
-            // label6
+            // lbStatusBD
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(24, 72);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(118, 13);
-            this.label6.TabIndex = 11;
-            this.label6.Text = "Nome banco de dados:";
-            // 
-            // cbNomeBancoDados
-            // 
-            this.cbNomeBancoDados.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbNomeBancoDados.FormattingEnabled = true;
-            this.cbNomeBancoDados.Location = new System.Drawing.Point(160, 69);
-            this.cbNomeBancoDados.Name = "cbNomeBancoDados";
-            this.cbNomeBancoDados.Size = new System.Drawing.Size(213, 21);
-            this.cbNomeBancoDados.TabIndex = 12;
+            this.lbStatusBD.AutoSize = true;
+            this.lbStatusBD.Location = new System.Drawing.Point(474, 115);
+            this.lbStatusBD.Name = "lbStatusBD";
+            this.lbStatusBD.Size = new System.Drawing.Size(0, 13);
+            this.lbStatusBD.TabIndex = 13;
             // 
             // frmServer
             // 
@@ -352,6 +362,7 @@
         private System.Windows.Forms.Label lbStatusBancoDados;
         private System.Windows.Forms.ComboBox cbNomeBancoDados;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lbStatusBD;
     }
 }
 

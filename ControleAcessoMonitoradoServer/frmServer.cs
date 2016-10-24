@@ -60,7 +60,9 @@ namespace ControleAcessoMonitoradoServer
             //Adiciona o IPV4 ao COMBOBOX
             cbIp.Items.Add(ip[1]);
             cbIp.SelectedIndex = 0;
+            btIniciarServidor.Enabled = false;
             btPararServidor.Enabled = false;
+            btDesconectarBancoDados.Enabled = false;
 
             configuracoesServidorBancoDados();
 
@@ -75,17 +77,6 @@ namespace ControleAcessoMonitoradoServer
 
 
         //Método que busca nome dos Servidores SQLSERVER locais e na rede. 
-        private void MostrarDados(DataTable dataTable)
-        {
-            foreach (DataRow row in dataTable.Rows)
-            {
-                cbNomeServidor.Items.Add(row["ServerName"]);
-                cbNomeBancoDados.Items.Add(row["InstanceName"]);
-            }
-
-            
-        }
-
         private  void RecuperarNomeServidorInstancia()
         {
             //List<String> ServerNames = new List<String>();
@@ -117,6 +108,7 @@ namespace ControleAcessoMonitoradoServer
             }
         }
 
+        //Método que busca nome dos DataBases de acordo com o Nome do Servidor.
         private void RecuperarNomeDataBases()
         {
             List<String> databases = new List<String>();
@@ -160,9 +152,7 @@ namespace ControleAcessoMonitoradoServer
             cbAutenticacao.Items.Add("Autenticação do Windows");
             cbAutenticacao.Items.Add("Autenticação do SQL Server");
             cbAutenticacao.SelectedIndex = 0;
-            btDesconectarBancoDados.Enabled = false;
 
-            
         }
 
 
@@ -244,6 +234,42 @@ namespace ControleAcessoMonitoradoServer
                 btPararServidor.Enabled = false;
             }
             
+        }
+
+        private void btConectarBancoDados_Click(object sender, EventArgs e)
+        {
+            AcessoDadosSqlServer acessoDadosSqlServer = AcessoDadosSqlServer.Instance;
+
+            if (cbAutenticacao.SelectedItem.Equals("Autenticação do Windows"))
+            {
+                acessoDadosSqlServer.DataSource = cbNomeServidor.SelectedItem.ToString();
+                acessoDadosSqlServer.DataBase = cbNomeBancoDados.SelectedItem.ToString();
+
+            }
+            if (cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
+            {
+
+                acessoDadosSqlServer.DataSource = cbNomeServidor.SelectedItem.ToString();
+                acessoDadosSqlServer.DataBase = cbNomeBancoDados.SelectedItem.ToString();
+                acessoDadosSqlServer.User = cbNomeUsuario.SelectedItem.ToString();
+                acessoDadosSqlServer.Senha = tbSenha.Text.ToString();
+
+            }
+
+            if (acessoDadosSqlServer.verificaConexao() == "1")
+            {
+                btIniciarServidor.Enabled = true;
+                btDesconectarBancoDados.Enabled = true;
+                btConectarBancoDados.Enabled = false;
+                lbStatusBD.ForeColor = Color.Green;
+                lbStatusBD.Text = "Conectado";
+            }
+            else
+            {
+                MessageBox.Show("Não foi possível realizar conexão com o banco de dados, verifique as configurações e tente novamente.", "Configurações banco de dados", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
         }
 
 
@@ -331,15 +357,7 @@ namespace ControleAcessoMonitoradoServer
             string identSala = "0";
             string senha = "0";
 
-            /*foreach(var item in comando)
-            {
-                    id = item.ToString();
-                    tag = item.ToString();
-                    identSala = item.ToString();
-                    senha = item.ToString();
-                
-            }*/
-
+           
             if (comando.Count() > 0)
             {
                 id = comando[0];
@@ -390,7 +408,7 @@ namespace ControleAcessoMonitoradoServer
             }
 
 
-             if (text.ToLower() == "get time") // Client requested time
+             /*if (text.ToLower() == "get time") // Client requested time
              {
                  Console.WriteLine("Text is a get time request");
                  byte[] resposta = Encoding.ASCII.GetBytes(DateTime.Now.ToLongTimeString());
@@ -412,33 +430,12 @@ namespace ControleAcessoMonitoradoServer
                  byte[] resposta = Encoding.ASCII.GetBytes("Invalid request");
                  current.Send(resposta);
                  Console.WriteLine("Warning Sent");
-             }
+             }*/
 
             current.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, current);
         }
 
-        private void btConectarBancoDados_Click(object sender, EventArgs e)
-        {
-            AcessoDadosSqlServer acessoDadosSqlServer;
-
-            if (cbAutenticacao.SelectedItem.Equals("Autenticação do Windows"))
-            {
-                string dataSource = cbNomeServidor.SelectedItem.ToString();
-                string dataBase = cbNomeBancoDados.SelectedItem.ToString();
-                acessoDadosSqlServer = new AcessoDadosSqlServer(dataSource, dataBase);
-               
-            }
-            if(cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
-            {
-                string dataSource = cbNomeServidor.SelectedItem.ToString();
-                string dataBase = cbNomeBancoDados.SelectedItem.ToString();
-                string user = cbNomeUsuario.SelectedItem.ToString();
-                string senha = tbSenha.Text.ToString();
-                acessoDadosSqlServer = new AcessoDadosSqlServer(dataSource, dataBase, user, senha);
-                
-            }
-            
-        }
+        
     }
 }
         

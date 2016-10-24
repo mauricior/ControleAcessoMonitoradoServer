@@ -11,7 +11,7 @@ namespace Controller
 {
     public class UsuarioController
     {
-        AcessoDadosSqlServer acessoDadosSqlServer = new AcessoDadosSqlServer();
+        AcessoDadosSqlServer acessoDadosSqlServer = AcessoDadosSqlServer.Instance;
 
         public string Inserir(Usuario usuario)
         {

@@ -12,7 +12,7 @@ namespace Controller
 {
     public class SalaController
     {
-        AcessoDadosSqlServer acessoDadosSqlServer = new AcessoDadosSqlServer();
+        AcessoDadosSqlServer acessoDadosSqlServer = AcessoDadosSqlServer.Instance;
 
         public string Inserir(Sala sala)
         {

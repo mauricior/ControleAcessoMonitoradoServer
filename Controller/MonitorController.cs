@@ -11,7 +11,7 @@ namespace Controller
 {
     public class MonitorController
     {
-        AcessoDadosSqlServer acessoDadosSqlServer = new AcessoDadosSqlServer();
+        AcessoDadosSqlServer acessoDadosSqlServer = AcessoDadosSqlServer.Instance;
 
         public string Inserir(Monitor monitor)
         {

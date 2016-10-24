@@ -11,11 +11,13 @@ namespace Connection
 {
     public class AcessoDadosSqlServer
     {
+
+        private static readonly AcessoDadosSqlServer instance = new AcessoDadosSqlServer();
         private string dataSource;
         private string dataBase;
         private string user;
         private string senha;
-
+        
         
 
         #region Atributos Classe
@@ -43,27 +45,15 @@ namespace Connection
         }
         #endregion
 
-
-        #region Métodos Construtores
-        public AcessoDadosSqlServer(string dataSource, string dataBase, string user, string senha)
+        //Padrão Singleton
+        public static AcessoDadosSqlServer Instance
         {
-            dataSource = this.dataSource;
-            dataBase = this.dataBase;
-            user = this.user;
-            senha = this.senha;
+            get
+            {
+                return instance;
+            }
         }
 
-        public AcessoDadosSqlServer(string dataSource, string dataBase)
-        {
-            dataSource = this.dataSource;
-            dataBase = this.dataBase;
-        }
-
-        public AcessoDadosSqlServer()
-        {
-
-        }
-        #endregion
 
         private string stringConexao()
         {
@@ -73,12 +63,13 @@ namespace Connection
             {
                 /*connectionString = @"Data Source =.\" + dataSource + ";" + "Initial Catalog=" + dataBase + ";" + "Integrated Security = True" + ";" +
                 "Connect Timeout = 30;" + "User Instance = True;";*/
-                connectionString = "Data Source = MAURICIO-PC; Initial Catalog = AcessoMonitorado1; Integrated Security = True";
+                //connectionString = "Data Source = MAURICIO-PC; Initial Catalog = AcessoMonitorado1; Integrated Security = True";
+                connectionString = "Data Source = " + dataSource + "; Initial Catalog = " + dataBase + "; Integrated Security = True";
             }
             else
             {
-                connectionString = @"Data Source =" + dataSource + ";" + "Initial Catalog=" + dataBase + ";" + "User ID=" + user + "Password=" + senha;
-                connectionString = "Data Source = MAURICIO-PC; Initial Catalog = AcessoMonitorado1; User ID = sa; Password= root";
+                connectionString = @"Data Source =" + dataSource + ";" + "Initial Catalog=" + dataBase + ";" + "User ID=" + user + ";Password=" + senha;
+                //connectionString = "Data Source = MAURICIO-PC; Initial Catalog = AcessoMonitorado1; User ID = sa; Password= root";
             }
 
             return connectionString;
@@ -176,6 +167,26 @@ namespace Connection
 
             }
         }
+
+        public string verificaConexao()
+        {
+            string retorno;
+            try
+            {
+                //Criar a conexão
+                SqlConnection sqlConnection = CriarConexao();
+                //Abrir conexão
+                sqlConnection.Open();
+                retorno = "1";
+            }
+            catch(Exception ex)
+            {
+                retorno = "0";
+            }
+
+            return retorno;
+        }
+
     }
 }
 
