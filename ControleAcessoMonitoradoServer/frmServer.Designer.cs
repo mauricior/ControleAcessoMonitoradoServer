@@ -38,6 +38,7 @@
             this.lbStatus = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lbStatusBD = new System.Windows.Forms.Label();
             this.cbNomeBancoDados = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.lbStatusBancoDados = new System.Windows.Forms.Label();
@@ -53,7 +54,7 @@
             this.cbNomeServidor = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tbConsole = new System.Windows.Forms.TextBox();
-            this.lbStatusBD = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -168,6 +169,14 @@
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configurações Banco de Dados";
+            // 
+            // lbStatusBD
+            // 
+            this.lbStatusBD.AutoSize = true;
+            this.lbStatusBD.Location = new System.Drawing.Point(474, 115);
+            this.lbStatusBD.Name = "lbStatusBD";
+            this.lbStatusBD.Size = new System.Drawing.Size(0, 13);
+            this.lbStatusBD.TabIndex = 13;
             // 
             // cbNomeBancoDados
             // 
@@ -307,23 +316,26 @@
             this.tbConsole.Size = new System.Drawing.Size(676, 369);
             this.tbConsole.TabIndex = 1;
             // 
-            // lbStatusBD
+            // groupBox4
             // 
-            this.lbStatusBD.AutoSize = true;
-            this.lbStatusBD.Location = new System.Drawing.Point(474, 115);
-            this.lbStatusBD.Name = "lbStatusBD";
-            this.lbStatusBD.Size = new System.Drawing.Size(0, 13);
-            this.lbStatusBD.TabIndex = 13;
+            this.groupBox4.Location = new System.Drawing.Point(12, 678);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(688, 169);
+            this.groupBox4.TabIndex = 9;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Clientes Conectados";
             // 
             // frmServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 684);
+            this.ClientSize = new System.Drawing.Size(712, 859);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmServer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Servidor";
             this.Load += new System.EventHandler(this.frmServer_Load);
             this.groupBox1.ResumeLayout(false);
@@ -363,6 +375,7 @@
         private System.Windows.Forms.ComboBox cbNomeBancoDados;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lbStatusBD;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }
 

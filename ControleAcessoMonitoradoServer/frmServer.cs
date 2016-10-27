@@ -83,18 +83,20 @@ namespace ControleAcessoMonitoradoServer
 
             SqlDataSourceEnumerator servers = SqlDataSourceEnumerator.Instance;
             DataTable serversTable = servers.GetDataSources();
+            
 
             foreach (DataRow row in serversTable.Rows)
             {
+                
                 string serverName = row[0].ToString();
-
+                
                 try
                 {
                     if (row[1].ToString() != "")
                     {
-
+                        
                         serverName += "\\" + row[1].ToString();
-
+                        //serverName = row[1].ToString();
                     }
                 }
                 catch
@@ -161,11 +163,16 @@ namespace ControleAcessoMonitoradoServer
         {
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do Windows"))
             {
-                if(cbNomeUsuario.Items.Count > 1)
+
+                if (cbNomeUsuario.Items.Count > 1)
                 {
                     cbNomeUsuario.SelectedIndex = 0;
+                    
                 }
 
+                tbSenha.Text = null;
+                cbNomeUsuario.SelectedText = null;
+                
                 cbNomeUsuario.Items.Add(System.Environment.UserDomainName + "/" + System.Environment.UserName);
                 cbNomeUsuario.SelectedIndex = 0;
                 lbNomeUsuario.Enabled = false;
@@ -173,10 +180,11 @@ namespace ControleAcessoMonitoradoServer
                 cbNomeUsuario.Enabled = false;
                 tbSenha.Enabled = false;
 
+
             }
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
             {
-                cbNomeUsuario.Items.RemoveAt(0);
+                //cbNomeUsuario.Items.RemoveAt(0);
                 lbNomeUsuario.Enabled = true;
                 lbSenha.Enabled = true;
                 cbNomeUsuario.Enabled = true;
@@ -194,7 +202,7 @@ namespace ControleAcessoMonitoradoServer
             {
 
                 //Variáveis que são passadas pelo usuário no form
-                string ip = cbIp.SelectedItem.ToString();
+                string ip = cbIp.Text.ToString();
                 int porta = Convert.ToInt32(tbPortaServidor.Text);
                 
                 //Se o método SetupServer retornar 1, significa que o servidor está rodando.
@@ -244,6 +252,8 @@ namespace ControleAcessoMonitoradoServer
             {
                 acessoDadosSqlServer.DataSource = cbNomeServidor.SelectedItem.ToString();
                 acessoDadosSqlServer.DataBase = cbNomeBancoDados.SelectedItem.ToString();
+                acessoDadosSqlServer.User = null;
+                acessoDadosSqlServer.Senha = null;
 
             }
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
