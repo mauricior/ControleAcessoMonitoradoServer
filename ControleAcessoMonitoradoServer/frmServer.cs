@@ -19,7 +19,7 @@ namespace ControleAcessoMonitoradoServer
     public partial class frmServer : Form
     {
 
-        
+       
         private static readonly List<Socket> clienteSockets = new List<Socket>();
         private const int BUFFER_SIZE = 2048;
         private static readonly byte[] buffer = new byte[BUFFER_SIZE];
@@ -30,10 +30,10 @@ namespace ControleAcessoMonitoradoServer
         //Instancias SQLServer
         DataTable dataTable = SqlDataSourceEnumerator.Instance.GetDataSources();
 
-        
+
         //Delegate e método de atualizar o textbox Console
         delegate void OutputUpdateDelegate(string dado);
-                
+
         public void AtualizarTextBox(string dado)
         {
             if (tbConsole.InvokeRequired)
@@ -45,20 +45,6 @@ namespace ControleAcessoMonitoradoServer
         private void OutputUpdateCallback(string dado)
         {
             tbConsole.AppendText(dado);
-        }
-
-        //Delegate e método de atualizar lista de UsuariosConectados
-        delegate void OuputUpdateDelegateLt(string dado);
-
-        public void AtualizarListBox(string dado)
-        {
-            if (ltClientesConectados.InvokeRequired)
-                ltClientesConectados.Invoke(new OuputUpdateDelegateLt(OutputUpdateCallbackLt), new object[] { dado });
-        }
-        
-        private void OutputUpdateCallbackLt(string dado)
-        {
-            ltClientesConectados.Items.Add(dado);
         }
 
 
@@ -80,13 +66,12 @@ namespace ControleAcessoMonitoradoServer
 
             configuracoesServidorBancoDados();
 
-            
             //Adiciona nomes dos Servidores SQLSERVER  disponiveis ao cbNomeServidor.
-            cbNomeBancoDados.Items.Clear();
             RecuperarNomeServidorInstancia();
             cbNomeServidor.SelectedIndex = 0;
             RecuperarNomeDataBases();
             cbNomeBancoDados.SelectedIndex = 0;
+            
 
         }
 
@@ -103,13 +88,12 @@ namespace ControleAcessoMonitoradoServer
             {
                 string serverName = row[0].ToString();
 
-                
                 try
                 {
-                    if (row[serversTable.Columns["InstanceName"]].ToString() != "")
+                    if (row[1].ToString() != "")
                     {
 
-                        serverName += "\\" + row[serversTable.Columns["InstanceName"]].ToString();
+                        serverName += "\\" + row[1].ToString();
 
                     }
                 }
@@ -131,8 +115,7 @@ namespace ControleAcessoMonitoradoServer
 
             SqlConnectionStringBuilder connection = new SqlConnectionStringBuilder();
 
-            
-            connection.DataSource = cbNomeServidor.Text.ToString();
+            connection.DataSource = cbNomeServidor.SelectedItem.ToString();
             // enter credentials if you want
             //connection.UserID = //get username;
             // connection.Password = //get password;
@@ -178,16 +161,11 @@ namespace ControleAcessoMonitoradoServer
         {
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do Windows"))
             {
-
-                if (cbNomeUsuario.Items.Count > 1)
+                if(cbNomeUsuario.Items.Count > 1)
                 {
                     cbNomeUsuario.SelectedIndex = 0;
-                    
                 }
 
-                tbSenha.Text = null;
-                cbNomeUsuario.SelectedText = null;
-                
                 cbNomeUsuario.Items.Add(System.Environment.UserDomainName + "/" + System.Environment.UserName);
                 cbNomeUsuario.SelectedIndex = 0;
                 lbNomeUsuario.Enabled = false;
@@ -195,11 +173,10 @@ namespace ControleAcessoMonitoradoServer
                 cbNomeUsuario.Enabled = false;
                 tbSenha.Enabled = false;
 
-
             }
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
             {
-                //cbNomeUsuario.Items.RemoveAt(0);
+                cbNomeUsuario.Items.RemoveAt(0);
                 lbNomeUsuario.Enabled = true;
                 lbSenha.Enabled = true;
                 cbNomeUsuario.Enabled = true;
@@ -265,16 +242,14 @@ namespace ControleAcessoMonitoradoServer
 
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do Windows"))
             {
-                acessoDadosSqlServer.DataSource = cbNomeServidor.Text.ToString();
+                acessoDadosSqlServer.DataSource = cbNomeServidor.SelectedItem.ToString();
                 acessoDadosSqlServer.DataBase = cbNomeBancoDados.SelectedItem.ToString();
-                acessoDadosSqlServer.User = null;
-                acessoDadosSqlServer.Senha = null;
 
             }
             if (cbAutenticacao.SelectedItem.Equals("Autenticação do SQL Server"))
             {
 
-                acessoDadosSqlServer.DataSource = cbNomeServidor.Text.ToString();
+                acessoDadosSqlServer.DataSource = cbNomeServidor.SelectedItem.ToString();
                 acessoDadosSqlServer.DataBase = cbNomeBancoDados.SelectedItem.ToString();
                 acessoDadosSqlServer.User = cbNomeUsuario.SelectedItem.ToString();
                 acessoDadosSqlServer.Senha = tbSenha.Text.ToString();
@@ -295,29 +270,6 @@ namespace ControleAcessoMonitoradoServer
             }
 
 
-        }
-
-        private void cbNomeServidor_Leave(object sender, EventArgs e)
-        {
-            cbNomeBancoDados.Items.Clear();
-            RecuperarNomeDataBases();
-        }
-
-        private void ltClientesConectados_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                //Selecione o item embaixo do ponteiro do mouse
-                ltClientesConectados.SelectedIndex = ltClientesConectados.IndexFromPoint(e.Location);
-                if (ltClientesConectados.SelectedIndex != -1)
-                {
-                    ltClientesConectados.ContextMenuStrip = contextMenuStrip_ListUsuariosConectados;
-                }
-                else
-                {
-                    ltClientesConectados.ContextMenuStrip = null;
-                }
-            }
         }
 
 
@@ -367,12 +319,10 @@ namespace ControleAcessoMonitoradoServer
 
 
             clienteSockets.Add(socket);
-            string clienteIP = socket.RemoteEndPoint.ToString();
             socket.BeginReceive(buffer, 0, BUFFER_SIZE, SocketFlags.None, ReceiveCallback, socket);
             serverSocket.BeginAccept(AcceptCallback, null);
             AtualizarTextBox("Cliente conectado, aguardando dados...\r\n");
-            AtualizarTextBox("IP Cliente: " + clienteIP + "\r\n");
-            AtualizarListBox(clienteIP);
+            
         }
 
         private void ReceiveCallback(IAsyncResult AR)
@@ -486,7 +436,6 @@ namespace ControleAcessoMonitoradoServer
         }
 
         
-
     }
 }
         
