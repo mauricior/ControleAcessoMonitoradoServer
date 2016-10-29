@@ -62,6 +62,7 @@ namespace ControleAcessoMonitoradoServer
         }
 
 
+
         public frmServer()
         {
             InitializeComponent();
