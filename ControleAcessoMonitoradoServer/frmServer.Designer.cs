@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.tbPortaServidor = new System.Windows.Forms.TextBox();
@@ -38,6 +39,7 @@
             this.lbStatus = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lbStatusBD = new System.Windows.Forms.Label();
             this.cbNomeBancoDados = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.lbStatusBancoDados = new System.Windows.Forms.Label();
@@ -53,10 +55,16 @@
             this.cbNomeServidor = new System.Windows.Forms.ComboBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tbConsole = new System.Windows.Forms.TextBox();
-            this.lbStatusBD = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ltClientesConectados = new System.Windows.Forms.ListBox();
+            this.contextMenuStrip_ListUsuariosConectados = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.contextMenuStrip_ListUsuariosConectados.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -168,6 +176,14 @@
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configurações Banco de Dados";
+            // 
+            // lbStatusBD
+            // 
+            this.lbStatusBD.AutoSize = true;
+            this.lbStatusBD.Location = new System.Drawing.Point(474, 115);
+            this.lbStatusBD.Name = "lbStatusBD";
+            this.lbStatusBD.Size = new System.Drawing.Size(0, 13);
+            this.lbStatusBD.TabIndex = 13;
             // 
             // cbNomeBancoDados
             // 
@@ -287,13 +303,14 @@
             this.cbNomeServidor.Name = "cbNomeServidor";
             this.cbNomeServidor.Size = new System.Drawing.Size(213, 21);
             this.cbNomeServidor.TabIndex = 0;
+            this.cbNomeServidor.Leave += new System.EventHandler(this.cbNomeServidor_Leave);
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.tbConsole);
             this.groupBox3.Location = new System.Drawing.Point(12, 278);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(688, 394);
+            this.groupBox3.Size = new System.Drawing.Size(688, 251);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Console";
@@ -304,26 +321,60 @@
             this.tbConsole.Location = new System.Drawing.Point(6, 19);
             this.tbConsole.Multiline = true;
             this.tbConsole.Name = "tbConsole";
-            this.tbConsole.Size = new System.Drawing.Size(676, 369);
+            this.tbConsole.Size = new System.Drawing.Size(676, 224);
             this.tbConsole.TabIndex = 1;
             // 
-            // lbStatusBD
+            // groupBox4
             // 
-            this.lbStatusBD.AutoSize = true;
-            this.lbStatusBD.Location = new System.Drawing.Point(474, 115);
-            this.lbStatusBD.Name = "lbStatusBD";
-            this.lbStatusBD.Size = new System.Drawing.Size(0, 13);
-            this.lbStatusBD.TabIndex = 13;
+            this.groupBox4.Controls.Add(this.ltClientesConectados);
+            this.groupBox4.Location = new System.Drawing.Point(12, 545);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(688, 169);
+            this.groupBox4.TabIndex = 9;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Clientes Conectados";
+            // 
+            // ltClientesConectados
+            // 
+            this.ltClientesConectados.ContextMenuStrip = this.contextMenuStrip_ListUsuariosConectados;
+            this.ltClientesConectados.FormattingEnabled = true;
+            this.ltClientesConectados.Location = new System.Drawing.Point(6, 19);
+            this.ltClientesConectados.Name = "ltClientesConectados";
+            this.ltClientesConectados.Size = new System.Drawing.Size(676, 147);
+            this.ltClientesConectados.TabIndex = 0;
+            this.ltClientesConectados.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ltClientesConectados_MouseDown);
+            // 
+            // contextMenuStrip_ListUsuariosConectados
+            // 
+            this.contextMenuStrip_ListUsuariosConectados.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
+            this.contextMenuStrip_ListUsuariosConectados.Name = "contextMenuStrip_ListUsuariosConectados";
+            this.contextMenuStrip_ListUsuariosConectados.Size = new System.Drawing.Size(163, 48);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItem1.Text = "Desconectar";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(162, 22);
+            this.toolStripMenuItem2.Text = "Enviar Comando";
             // 
             // frmServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 684);
+            this.ClientSize = new System.Drawing.Size(712, 740);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmServer";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Servidor";
             this.Load += new System.EventHandler(this.frmServer_Load);
             this.groupBox1.ResumeLayout(false);
@@ -332,6 +383,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.contextMenuStrip_ListUsuariosConectados.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -363,6 +416,11 @@
         private System.Windows.Forms.ComboBox cbNomeBancoDados;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lbStatusBD;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.ListBox ltClientesConectados;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip_ListUsuariosConectados;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
     }
 }
 
